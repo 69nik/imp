@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mulige Vandre Weekender</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2d3748;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #4a5568;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .hint {
+            text-align: center;
+            color: #f59e0b;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+
+        .person-selector {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .person-btn {
+            padding: 12px 30px;
+            border: 3px solid;
+            background: white;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .person-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .person-btn.active {
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .eskild { border-color: #10b981; color: #10b981; }
+        .eskild.active { background: #10b981; }
+        
+        .kim { border-color: #3b82f6; color: #3b82f6; }
+        .kim.active { background: #3b82f6; }
+        
+        .henrik { border-color: #f59e0b; color: #f59e0b; }
+        .henrik.active { background: #f59e0b; }
+        
+        .nikolaj { border-color: #ef4444; color: #ef4444; }
+        .nikolaj.active { background: #ef4444; }
+
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .legend-color {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+        }
+
+        .year-section {
+            margin-bottom: 40px;
+        }
+
+        .year-title {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            text-align: center;
+        }
+
+        .months-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .month-card {
+            background: #f7fafc;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .month-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #2d3748;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .weekend-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .weekend-option {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+            border: 2px solid #e2e8f0;
+            background: white;
+            transition: all 0.2s;
+        }
+
+        .weekend-option:hover {
+            border-color: #cbd5e0;
+            transform: scale(1.02);
+        }
+
+        .weekend-option.selected {
+            font-weight: bold;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .markers {
+            display: flex;
+            gap: 4px;
+            justify-content: center;
+            margin-top: 6px;
+            flex-wrap: wrap;
+        }
+
+        .marker {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .all-available {
+            background: #fef3c7 !important;
+            border: 2px solid #f59e0b !important;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.8em;
+            }
+            
+            .months-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🥾 Mulige Vandre Weekender 🥾</h1>
+        <p class="subtitle">Sæt kryds hvornår at du kan</p>
+        <p class="hint">Weekender med GUL baggrund = alle kan</p>
+        
+        <div class="person-selector">
+            <button class="person-btn eskild" onclick="selectPerson('eskild')">Eskild</button>
+            <button class="person-btn kim" onclick="selectPerson('kim')">Kim</button>
+            <button class="person-btn henrik" onclick="selectPerson('henrik')">Henrik</button>
+            <button class="person-btn nikolaj" onclick="selectPerson('nikolaj')">Nikolaj</button>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background: #10b981;"></div>
+                <span>Eskild</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #3b82f6;"></div>
+                <span>Kim</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #f59e0b;"></div>
+                <span>Henrik</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #ef4444;"></div>
+                <span>Nikolaj</span>
+            </div>
+        </div>
+
+        <div id="calendar"></div>
+    </div>
+
+    <script>
+        let currentPerson = null;
+        const selections = {
+            eskild: {},
+            kim: {},
+            henrik: {},
+            nikolaj: {}
+        };
+
+        const colors = {
+            eskild: '#10b981',
+            kim: '#3b82f6',
+            henrik: '#f59e0b',
+            nikolaj: '#ef4444'
+        };
+
+        const months = {
+            3: 'Marts',
+            4: 'April',
+            5: 'Maj',
+            9: 'September',
+            10: 'Oktober',
+            11: 'November'
+        };
+
+        function selectPerson(person) {
+            currentPerson = person;
+            document.querySelectorAll('.person-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`.person-btn.${person}`).classList.add('active');
+        }
+
+        function getWeekendsInMonth(year, month) {
+            const weekends = [];
+            const daysInMonth = new Date(year, month, 0).getDate();
+            
+            for (let day = 1; day <= daysInMonth; day++) {
+                const date = new Date(year, month - 1, day);
+                const dayOfWeek = date.getDay(); // 0=Søndag, 1=Mandag, ..., 5=Fredag, 6=Lørdag
+                
+                // Fredag (5) - tilføj Fre/Lør weekend
+                if (dayOfWeek === 5) {
+                    const saturday = day + 1;
+                    if (saturday <= daysInMonth) {
+                        // Verificer at næste dag faktisk er lørdag
+                        const nextDate = new Date(year, month - 1, saturday);
+                        if (nextDate.getDay() === 6) {
+                            weekends.push({
+                                label: `Fre/Lør ${day}/${saturday}`,
+                                key: `${year}-${month}-${day}-fs`,
+                                type: 'frisat'
+                            });
+                        }
+                    }
+                }
+                
+                // Lørdag (6) - tilføj Lør/Søn weekend
+                if (dayOfWeek === 6) {
+                    const sunday = day + 1;
+                    // Tjek om søndag er i samme måned eller næste måned
+                    if (sunday <= daysInMonth) {
+                        const nextDate = new Date(year, month - 1, sunday);
+                        if (nextDate.getDay() === 0) {
+                            weekends.push({
+                                label: `Lør/Søn ${day}/${sunday}`,
+                                key: `${year}-${month}-${day}-ss`,
+                                type: 'satsun'
+                            });
+                        }
+                    } else {
+                        // Søndag er den 1. i næste måned
+                        const nextMonthDate = new Date(year, month, 1);
+                        if (nextMonthDate.getDay() === 0) {
+                            weekends.push({
+                                label: `Lør/Søn ${day}/1*`,
+                                key: `${year}-${month}-${day}-ss`,
+                                type: 'satsun'
+                            });
+                        }
+                    }
+                }
+            }
+            
+            return weekends;
+        }
+
+        function toggleSelection(key) {
+            if (!currentPerson) {
+                alert('Vælg venligst en person først!');
+                return;
+            }
+
+            if (selections[currentPerson][key]) {
+                delete selections[currentPerson][key];
+            } else {
+                selections[currentPerson][key] = true;
+            }
+
+            renderCalendar();
+        }
+
+        function renderCalendar() {
+            const calendar = document.getElementById('calendar');
+            calendar.innerHTML = '';
+
+            for (let year = 2026; year <= 2040; year++) {
+                const yearDiv = document.createElement('div');
+                yearDiv.className = 'year-section';
+                
+                const yearTitle = document.createElement('div');
+                yearTitle.className = 'year-title';
+                yearTitle.textContent = year;
+                yearDiv.appendChild(yearTitle);
+
+                const monthsGrid = document.createElement('div');
+                monthsGrid.className = 'months-grid';
+
+                for (const [monthNum, monthName] of Object.entries(months)) {
+                    const monthCard = document.createElement('div');
+                    monthCard.className = 'month-card';
+
+                    const monthTitle = document.createElement('div');
+                    monthTitle.className = 'month-title';
+                    monthTitle.textContent = monthName;
+                    monthCard.appendChild(monthTitle);
+
+                    const weekends = getWeekendsInMonth(year, parseInt(monthNum));
+                    
+                    weekends.forEach(weekend => {
+                        const weekendRow = document.createElement('div');
+                        weekendRow.className = 'weekend-row';
+                        
+                        const option = createWeekendOption(weekend.label, weekend.key);
+                        weekendRow.appendChild(option);
+                        
+                        monthCard.appendChild(weekendRow);
+                    });
+
+                    monthsGrid.appendChild(monthCard);
+                }
+
+                yearDiv.appendChild(monthsGrid);
+                calendar.appendChild(yearDiv);
+            }
+        }
+
+        function createWeekendOption(label, key) {
+            const option = document.createElement('div');
+            option.className = 'weekend-option';
+            
+            const selectedBy = [];
+            for (const [person, sel] of Object.entries(selections)) {
+                if (sel[key]) {
+                    selectedBy.push(person);
+                }
+            }
+
+            if (selectedBy.length === 4) {
+                option.classList.add('all-available');
+            }
+
+            if (currentPerson && selections[currentPerson][key]) {
+                option.classList.add('selected');
+                option.style.backgroundColor = colors[currentPerson] + '20';
+                option.style.borderColor = colors[currentPerson];
+            }
+
+            option.innerHTML = `<div>${label}</div>`;
+
+            if (selectedBy.length > 0) {
+                const markers = document.createElement('div');
+                markers.className = 'markers';
+                selectedBy.forEach(person => {
+                    const marker = document.createElement('div');
+                    marker.className = 'marker';
+                    marker.style.backgroundColor = colors[person];
+                    marker.title = person.charAt(0).toUpperCase() + person.slice(1);
+                    markers.appendChild(marker);
+                });
+                option.appendChild(markers);
+            }
+
+            option.onclick = () => toggleSelection(key);
+            return option;
+        }
+
+        renderCalendar();
+    </script>
+</body>
+</html>
