@@ -3,8 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mulige Vandre Weekender</title>
+    <title>Impro-Generator</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg: #f9f7f4;
+            --text: #2a2520;
+            --accent: #d4573b;
+            --soft: #e8dfd6;
+            --border: #c9bdb0;
+            --result-text: 1.3rem;
+            --secret-text: 0.91rem;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -12,425 +23,493 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'IBM Plex Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
             min-height: 100vh;
-            padding: 20px;
+            padding: 2rem 1rem;
         }
 
         .container {
-            max-width: 1400px;
+            max-width: 680px;
             margin: 0 auto;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeIn 0.8s ease-out;
         }
 
         h1 {
-            text-align: center;
-            color: #2d3748;
-            margin-bottom: 10px;
-            font-size: 2.5em;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            font-family: 'DM Serif Display', serif;
+            font-size: 3.5rem;
+            font-weight: 400;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+            letter-spacing: -0.02em;
         }
 
         .subtitle {
-            text-align: center;
-            color: #4a5568;
-            margin-bottom: 10px;
-            font-size: 1.2em;
+            font-size: 0.95rem;
+            color: #6b5f54;
+            font-weight: 300;
+            letter-spacing: 0.02em;
         }
 
-        .hint {
-            text-align: center;
-            color: #f59e0b;
-            margin-bottom: 30px;
-            font-size: 1.1em;
-            font-weight: bold;
-        }
-
-        .person-selector {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-        }
-
-        .person-btn {
-            padding: 12px 30px;
-            border: 3px solid;
-            background: white;
-            border-radius: 25px;
+        .generate-btn {
+            display: block;
+            width: 100%;
+            max-width: 280px;
+            margin: 0 auto 3rem;
+            padding: 1.1rem 2.5rem;
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-size: 1rem;
+            font-weight: 500;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 2px;
             cursor: pointer;
-            font-size: 1.1em;
-            font-weight: bold;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+            box-shadow: 0 4px 12px rgba(212, 87, 59, 0.15);
         }
 
-        .person-btn:hover {
+        .generate-btn:hover {
+            background: #c14a30;
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 6px 20px rgba(212, 87, 59, 0.25);
         }
 
-        .person-btn.active {
-            color: white;
-            transform: scale(1.05);
+        .generate-btn:active {
+            transform: translateY(0);
         }
 
-        .eskild { border-color: #10b981; color: #10b981; }
-        .eskild.active { background: #10b981; }
-        
-        .kim { border-color: #3b82f6; color: #3b82f6; }
-        .kim.active { background: #3b82f6; }
-        
-        .henrik { border-color: #f59e0b; color: #f59e0b; }
-        .henrik.active { background: #f59e0b; }
-        
-        .nikolaj { border-color: #ef4444; color: #ef4444; }
-        .nikolaj.active { background: #ef4444; }
-
-        .legend {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .legend-color {
-            width: 24px;
-            height: 24px;
-            border-radius: 4px;
-        }
-
-        .year-section {
-            margin-bottom: 40px;
-        }
-
-        .year-title {
-            background: linear-gradient(90deg, #667eea, #764ba2);
-            color: white;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            font-size: 1.5em;
-            text-align: center;
-        }
-
-        .months-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-        }
-
-        .month-card {
-            background: #f7fafc;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .month-title {
-            font-size: 1.3em;
-            font-weight: bold;
-            color: #2d3748;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-
-        .weekend-row {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-
-        .weekend-option {
-            flex: 1;
-            padding: 10px;
-            text-align: center;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.9em;
-            border: 2px solid #e2e8f0;
+        .result-container {
             background: white;
-            transition: all 0.2s;
+            border: 1px solid var(--border);
+            border-radius: 2px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            opacity: 0;
+            animation: slideUp 0.6s ease-out forwards;
         }
 
-        .weekend-option:hover {
-            border-color: #cbd5e0;
-            transform: scale(1.02);
+        .result-item {
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--soft);
         }
 
-        .weekend-option.selected {
-            font-weight: bold;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        .result-item:last-of-type {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
         }
 
-        .markers {
-            display: flex;
-            gap: 4px;
-            justify-content: center;
-            margin-top: 6px;
-            flex-wrap: wrap;
+        .result-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #8a7a6d;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
         }
 
-        .marker {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
+        .result-value {
+            font-size: var(--result-text);
+            font-weight: 400;
+            color: var(--text);
+            line-height: 1.4;
         }
 
-        .all-available {
-            background: #fef3c7 !important;
-            border: 2px solid #f59e0b !important;
+        .result-value.super-x {
+            font-size: var(--secret-text);
+            font-style: italic;
+            color: var(--accent);
         }
 
-        @media (max-width: 768px) {
-            .container {
-                padding: 20px;
+        .scenario {
+            background: var(--soft);
+            padding: 2rem;
+            border-radius: 2px;
+            font-size: 1.05rem;
+            line-height: 1.7;
+            color: var(--text);
+            margin-top: 2rem;
+            animation: fadeIn 0.8s ease-out 0.3s backwards;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--soft);
+            font-size: 0.85rem;
+            color: #8a7a6d;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
             }
-            
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 600px) {
             h1 {
-                font-size: 1.8em;
+                font-size: 2.5rem;
             }
             
-            .months-grid {
-                grid-template-columns: 1fr;
+            .result-container {
+                padding: 1.5rem;
+            }
+            
+            .scenario {
+                padding: 1.5rem;
+            }
+
+            .result-value {
+                font-size: 1.1rem;
+            }
+
+            .result-value.super-x {
+                font-size: 0.77rem;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🥾 Mulige Vandre Weekender 🥾</h1>
-        <p class="subtitle">Sæt kryds hvornår at du kan</p>
-        <p class="hint">Weekender med GUL baggrund = alle kan</p>
-        
-        <div class="person-selector">
-            <button class="person-btn eskild" onclick="selectPerson('eskild')">Eskild</button>
-            <button class="person-btn kim" onclick="selectPerson('kim')">Kim</button>
-            <button class="person-btn henrik" onclick="selectPerson('henrik')">Henrik</button>
-            <button class="person-btn nikolaj" onclick="selectPerson('nikolaj')">Nikolaj</button>
-        </div>
+        <header>
+            <h1>Impro-Generator</h1>
+            <p class="subtitle">Tilfældige udgangspunkter til improvisation</p>
+        </header>
 
-        <div class="legend">
-            <div class="legend-item">
-                <div class="legend-color" style="background: #10b981;"></div>
-                <span>Eskild</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-color" style="background: #3b82f6;"></div>
-                <span>Kim</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-color" style="background: #f59e0b;"></div>
-                <span>Henrik</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-color" style="background: #ef4444;"></div>
-                <span>Nikolaj</span>
-            </div>
-        </div>
+        <button class="generate-btn" onclick="generateScenario()">Generér scenario</button>
 
-        <div id="calendar"></div>
+        <div id="resultArea" class="hidden"></div>
+
+        <footer>
+            Tryk på knappen for at generere et nyt improvisations-setup
+        </footer>
     </div>
 
     <script>
-        let currentPerson = null;
-        const selections = {
-            eskild: {},
-            kim: {},
-            henrik: {},
-            nikolaj: {}
+        const locations = [
+            "kiosk", "banegård", "cirkus", "laboratorium", "brandbil", "bibliotek", "svømmehal", 
+            "supermarked", "apotek", "biograf", "tandlægeklinik", "frisør", "museum", "zoo", 
+            "køkken", "badeværelse", "elevator", "taxi", "bus", "tog", "fly", "ubåd", 
+            "rumskib", "hule", "ørken", "skov", "strand", "bjerg", "sø", "flod", 
+            "park", "legeplads", "kirkegård", "kirke", "rådhus", "retssag", "fængsel", 
+            "politistation", "brandstation", "sygehus", "operationsstue", "venteværelse", "skole", 
+            "universitet", "gymnasium", "børnehave", "kontor", "mødelokale", "kantine", "reception", 
+            "hotel", "restaurant", "café", "bar", "natklub", "fitnesscenter", "sauna", 
+            "spa", "tatovør", "dyrlægeklinik", "planteskole", "blomsterbutik", "bageri", "slagter", 
+            "tøjbutik", "skobutik", "juvelér", "antikvariat", "pladebutik", "spillehal", "bowling", 
+            "minigolf", "forlystelsespark", "spøgelsestog", "rutsjebane", "pariserhjul", "teater", "backstage", 
+            "garderobe", "fotostudie", "malerstudie", "dansestudie", "yogastudie", "boxering", "ishockeybane", 
+            "fodboldbane", "tennisbane", "golfbane", "skihytte", "campingplads", "telt", "autocamper", 
+            "yacht", "fiskekutter", "havnemole", "fyrtårn", "tankstation", "værksted", "losseplads", 
+            "genbrugsstation", "posthus", "bank", "ambassade", "lufthavn", "tolden", "grænseovergang", 
+            "festival", "marked", "auktion", "galoppbane", "dyrepark", "akvarium", "kasino", 
+            "spillekasino", "loppemarked", "penthouse", "kælder", "loft", "garage"
+        ];
+
+        const objectsByLocation = {
+            "kiosk": ["dankortterminal", "slikhylde", "køleskab", "skrabelod", "avis", "iskaffe", "cigaret", "lotterikupon", "solbriller", "tyggegummi"],
+            "banegård": ["rejsekort", "perronbillet", "togkort", "kaffe til go", "kuffert", "skraldespand", "informationstavle", "bænk", "ur", "højtaler"],
+            "cirkus": ["trampolin", "jongleringskøller", "løvenæb", "kostume", "sminke", "kasket", "telt", "tilskuerbillet", "popcorn", "konfetti"],
+            "laboratorium": ["mikroskop", "petriskål", "beskyttelsesbriller", "reagensglas", "bunsenbrænder", "kittel", "handsker", "pipette", "computer", "kemikalie"],
+            "brandbil": ["slange", "stige", "hjelm", "iltmaske", "økse", "handsker", "uniform", "førstehjælpskasse", "radio", "sikkerhedssele"],
+            "bibliotek": ["bog", "bibliotekskort", "pc", "lampe", "stol", "boghylde", "avis", "stempel", "kaffemaskine", "notesblok"],
+            "svømmehal": ["badebukser", "svømmebriller", "håndklæde", "shampoo", "svømmebræt", "badehat", "flip-flops", "omklædningsskab", "livredder-fløjte", "vandrutsjebane-billet"],
+            "supermarked": ["indkøbskurv", "kassebon", "plastikpose", "frugt", "mælk", "brød", "scannerkasse", "varevogn", "tilbudsavis", "stregkode"],
+            "apotek": ["medicin", "recept", "blodtryksmåler", "plaster", "vitaminpiller", "termometer", "hostesaft", "håndsprit", "mundvand", "brochure"],
+            "biograf": ["biografbillet", "popcorn", "sodavand", "slik", "3D-briller", "program", "pude", "billet-stub", "garderobe-mærke", "reklamefilm"],
+            "tandlægeklinik": ["tandbørste", "tandpasta", "mundskyller", "dental-spejl", "bor", "bedøvelsessprøjte", "mundskyl-kop", "engangsserviet", "læselampe", "aftalekort"],
+            "frisør": ["saks", "hårspray", "hårtørrer", "kam", "barbermaskine", "shampoo", "farve", "spejl", "kappe", "hårelastik"],
+            "museum": ["udstillingsgenstand", "brochure", "audioguide", "souvenir", "maling", "skulptur", "fotografi", "billet", "katalog", "bænk"],
+            "zoo": ["dyrebillet", "dyrefoder", "informationstavle", "is", "kikkert", "kort", "papirkurv", "bænk", "gitterlåge", "dyrelyd-guide"],
+            "køkken": ["gryde", "kniv", "skærebræt", "opvaskemiddel", "kop", "køleskab", "komfur", "ovn", "suppeskål", "håndklæde"],
+            "badeværelse": ["tandtråd", "toilet", "vask", "spejl", "håndklæde", "shampoo", "sæbe", "brusekabine", "toiletpapir", "tøjkurv"],
+            "elevator": ["knap", "spejl", "nødtelefon", "gulvtæppe", "vægt-mærkat", "loftlampe", "ur", "skilt", "håndliste", "displayskærm"],
+            "taxi": ["taxameter", "sikkerhedssele", "bagsæde", "radiosender", "bakspejl", "luftfrisker", "kvittering", "gps", "nakkestøtte", "dørhåndtag"],
+            "bus": ["buskortkæder", "stophane", "sæde", "vindue", "buskortlæser", "chauffør", "højttaler", "informationsskærm", "sikkerhedsstang", "døråbner"],
+            "tog": ["billetklips", "sæde", "kufferthylde", "vindue", "bord", "affaldspose", "stikkontakt", "informationstavle", "døråbner", "togkonduktør"],
+            "fly": ["sikkerhedssele", "håndbagage", "luftventilation", "iltmaske", "sæde", "vindue", "tablet", "hems", "hovedtelefoner", "madkurv"],
+            "ubåd": ["periskop", "kontrolpanel", "søkort", "sonar", "radio", "ventil", "nødudgang", "madration", "iltflaske", "kompass"],
+            "rumskib": ["kontolpanel", "skærm", "astronautdragt", "sele", "iltmaske", "sovetilstand", "rumfødder", "kommunikationsenhed", "raket", "værktøjssæt"],
+            "hule": ["fakkel", "lommelygte", "kompas", "rygsæk", "vandflaske", "stifindersnor", "sten", "flagermus", "stalaktit", "tæppe"],
+            "ørken": ["flaske vand", "solcreme", "hat", "solbriller", "vandrestave", "kort", "telt", "rygsæk", "kamel", "kompas"],
+            "skov": ["kniv", "lommelygte", "kort", "kompass", "rygsæk", "vandrestøvler", "insektspray", "fødevarer", "sovepose", "kikkert"],
+            "strand": ["håndklæde", "solcreme", "solbriller", "parasol", "strandstol", "badebold", "skovl", "spand", "surfbræt", "is"],
+            "bjerg": ["vandrerstave", "rygsæk", "klatrereb", "hjelm", "kompas", "termos", "første-hjælpskasse", "handsker", "sovepose", "telt"],
+            "sø": ["fiskestang", "edderkop", "robåd", "åre", "kano", "redningsvest", "madkurv", "fiskenet", "sol-hat", "køler"],
+            "flod": ["gummibåd", "åre", "redningsvest", "vandflaske", "snorkel", "svømmebriller", "kort", "lommelygte", "førstehjælp", "tørt tøj"],
+            "park": ["bænk", "affaldskurv", "græsplæne", "blomst", "cykel", "hundeposeautomat", "legeplads", "informationstavle", "picnictæppe", "frisbee"],
+            "legeplads": ["gynge", "rutsjebane", "sandkasse", "skovl", "spand", "bold", "klatrestativ", "vippe", "picnicbord", "affaldskurv"],
+            "kirkegård": ["gravsten", "blomsterkrans", "lys", "bårebuket", "bænk", "vand-kande", "mindeplade", "træ", "grus", "kapel"],
+            "kirke": ["salmebog", "prædikestol", "alter", "dåbsfont", "messehagel", "korsbanner", "siddeplads", "orgel", "blomstervase", "bibel"],
+            "rådhus": ["embedsmand", "skrivebord", "stempel", "blanket", "id-kort", "vielsesattest", "arkiv", "skilt", "venterum", "reception"],
+            "retssag": ["hammer", "dommerkåbe", "anklager", "forsvarer", "vidnestand", "documents", "notesblok", "lup", "mikrophone", "stævning"],
+            "fængsel": ["tremmer", "nøgler", "vogter", "seng", "toilet", "uniform", "håndklæde", "spiserum", "gårdtur-kort", "besøgstid-liste"],
+            "politistation": ["badge", "håndjern", "skrivemaskine", "rapport", "afhøringsrum", "celle", "politibil", "radio", "vest", "stempel"],
+            "brandstation": ["brandslukker", "stige", "alarm", "uniform", "køretøj", "hjelm", "røgdykkermaske", "slange", "værktøj", "radio"],
+            "sygehus": ["stetoskop", "termometer", "journal", "sengetæppe", "infusion", "patientarmbånd", "rullebord", "operation-lampe", "sygeplejerske-uniform", "læge-kittel"],
+            "operationsstue": ["skalpel", "handsker", "maske", "operationslampe", "iltmaske", "grøn kittel", "instrumentbakke", "sutur", "saks", "kompressen"],
+            "venteværelse": ["magasin", "stol", "bordbælte", "vandkøler", "informationstavle", "ur", "affaldskurv", "legetøj", "receptionsskranke", "blomst"],
+            "skole": ["skoletaske", "blyant", "radiergummi", "lineal", "bøger", "tavle", "kridt", "pc", "projektor", "papir"],
+            "universitet": ["notesbog", "computer", "kursusmateriale", "auditorium-sæde", "projektor", "whiteboardpen", "mikrofon", "studiekort", "biblioteksbog", "kaffekop"],
+            "gymnasium": ["studiebog", "lommeregner", "computers", "whiteboardtavle", "projektor", "studiehæfte", "blyant", "penalhus", "rygsæk", "klasse-skema"],
+            "børnehave": ["legetøj", "farver", "papir", "byggeklodser", "dukke", "bog", "frugtmad", "madpakke", "bleer", "garderobe"],
+            "kontor": ["computer", "mus", "tastatur", "skrivebord", "stol", "papir", "kuglepen", "telefon", "printer", "kaffe-kop"],
+            "mødelokale": ["whiteboardtavle", "projektor", "bord", "stol", "glas-vand", "notesbog", "pen", "flipchart", "mikrophone", "fjernbetjening"],
+            "kantine": ["bakke", "bestik", "tallerken", "glas", "serviet", "saltkar", "peberkværn", "menu", "kaffemaskine", "mikrobølgeovn"],
+            "reception": ["telefon", "skrivebord", "computer", "nøglekort", "notesblok", "printer", "stempel", "clipboard", "brevvægt", "visitkort"],
+            "hotel": ["nøglekort", "kuffert", "minibar", "tv-fjernbetjening", "håndklæde", "sengetæppe", "morgenpostkort", "room-service-menu", "hårtørrer", "vækkeur"],
+            "restaurant": ["menu", "bestik", "tallerken", "glas", "serviet", "salt", "peber", "lysestage", "blomst", "regning"],
+            "café": ["kaffekop", "kage", "menu", "sukker", "mælk", "te", "kaffe-bønner", "avisstativ", "servietter", "ske"],
+            "bar": ["cocktailshaker", "glas", "drinkmenu", "øl", "spiritus", "isterninger", "citronskiver", "barstol", "musik", "bordkort"],
+            "natklub": ["drink", "dansegulv", "højttaler", "disco-kugle", "garderobe-mærke", "entrebillet", "strobe-lys", "dj-pult", "sikkerhedsvagter", "scene"],
+            "fitnesscenter": ["håndvægt", "løbebånd", "træningsdrink", "håndklæde", "medlemskort", "yogamåtte", "spejl", "vægtstang", "elastik", "vandtflaske"],
+            "sauna": ["håndklæde", "opslugningsmiddel", "bænk", "timer", "duft-olie", "vandspand", "ske", "termometer", "omklædningsrum", "badehåndklæde"],
+            "spa": ["badedragt", "håndklæde", "massage-olie", "varmepude", "robe", "badeting", "behandlingsseng", "aromalys", "krystal", "te-kop"],
+            "tatovør": ["tatoveringsmaskine", "blæk", "handsker", "skabelon", "desinfektionsmiddel", "kompressen", "creme", "spejl", "stol", "aftercare-sæbe"],
+            "dyrlægeklinik": ["stetoskop", "sprøjte", "medicin", "eksaminationsbord", "halsrem", "termometer", "bandage", "journal", "dyrekurv", "handsker"],
+            "planteskole": ["potte", "jord", "skovl", "vand-kande", "frø", "gødning", "etikette", "handsker", "sæk", "plante"],
+            "blomsterbutik": ["buket", "vase", "saks", "papir", "bånd", "blomsterfrø", "gødning", "kort", "plante-spray", "dekorationsmateriale"],
+            "bageri": ["brød", "kage", "croissant", "bolle", "kaffe", "serviette", "pose", "kassebon", "smørcreme", "bagepapir"],
+            "slagter": ["kødkniv", "hakket oksekød", "pølse", "bacon", "kylling", "hakkeblok", "vægt", "papiremballage", "handsker", "skilt"],
+            "tøjbutik": ["tøj", "bøjle", "spejl", "kasse", "prismærke", "pose", "mannequin", "strikkevarer", "prøverum", "målebånd"],
+            "skobutik": ["sko", "skohorn", "snørebånd", "æske", "spejl", "målebånd", "plejemiddel", "indlægssål", "taburet", "pose"],
+            "juvelér": ["ring", "halskæde", "armbånd", "ure", "lup", "æske", "polerpude", "diamant", "certifikat", "sikring"],
+            "antikvariat": ["gammel bog", "forstørrelsesglas", "stempel", "seddel", "kasse", "støvklud", "kopi", "stol", "briller", "noter"],
+            "pladebutik": ["vinyl", "cd", "hovedtelefoner", "afspiller", "plakat", "plastikpose", "katalog", "plade-hylde", "notesbog", "merchandise"],
+            "spillehal": ["jetoner", "automat", "lyskaster", "skærm", "joystick", "plakat", "kuglepen", "præmie", "kort", "slik"],
+            "bowling": ["bowlingkugle", "sko", "scoreboard", "bowlingbane", "pins", "handsker", "vand", "sodavand", "burger", "musik"],
+            "minigolf": ["golfkølle", "bold", "scorecard", "blyant", "forhindring", "flag", "græs", "sand", "vandspring", "bænk"],
+            "forlystelsespark": ["billet", "armbånd", "candy-floss", "is", "popcorn", "karussel-hest", "ballon", "kort", "lotteri-seddel", "fastfood"],
+            "spøgelsestog": ["skinner", "spøgelse", "lys-effekt", "lydeffekt", "vogn", "sikkerhedsbøjle", "billet", "maske", "kulisse", "udgang"],
+            "rutsjebane": ["vogn", "sikkerhedsbøjle", "skinner", "billet", "kø-barriere", "operator", "fotostativ", "højtalere", "nød-stop-knap", "udgangsskilt"],
+            "pariserhjul": ["gondol", "sikkerhedssele", "udsigt", "billet", "lyskæde", "platform", "lyd", "højde-mærke", "ur", "operator"],
+            "teater": ["scenografi", "rekvisit", "maske", "kostume", "spotlight", "lyd-panel", "program", "billet", "instruktørstol", "mikrophone"],
+            "backstage": ["kostume", "sminke", "spejl", "lyspult", "rekvisit", "instruktionsark", "kaffe", "skuespiller", "hårspray", "tæppe"],
+            "garderobe": ["tøj", "spejl", "makeupbord", "sminke", "krukke", "lyspære", "hårspray", "kostume", "saks", "notesblok"],
+            "fotostudie": ["kamera", "stativ", "lampe", "reflektor", "baggrund", "linse", "flash", "computerskærm", "memory-kort", "model-stol"],
+            "malerstudie": ["staffeli", "pensel", "maling", "palet", "lærred", "klude", "blyant", "vand", "krukke", "briller"],
+            "dansestudie": ["spejl", "musikanlæg", "yogamåtte", "dansesko", "håndklæde", "vandflaske", "timer", "stang", "lydanlæg", "lydplayliste"],
+            "yogastudie": ["yogamåtte", "klods", "rem", "bolster", "tæppe", "vandflaske", "musik", "røgelsespinde", "blomst", "timer"],
+            "boxering": ["boksehandsker", "sandsæk", "mundværn", "håndlindinger", "ring", "timer", "skip-reb", "håndklæde", "vandflaske", "træner"],
+            "ishockeybane": ["puck", "hockeystav", "handsker", "hjelm", "skøjter", "mål", "tidtagning", "bænk", "sikkerhedsglas", "scoreboard"],
+            "fodboldbane": ["bold", "mål", "dommer-fløjte", "gult kort", "rødt kort", "trøje", "støvler", "vand", "håndklæde", "bænk"],
+            "tennisbane": ["tennisketcher", "tennisbold", "net", "linje-mærke", "dommer-stol", "vandflaske", "håndklæde", "scoreboard", "taske", "cap"],
+            "golfbane": ["golfkølle", "golfbold", "flag", "tee", "scorecard", "blyant", "handske", "indlægssål", "cap", "bunker-skovl"],
+            "skihytte": ["ski", "stave", "varme-chokolade", "pejs", "tæppe", "skihjelm", "støvler", "handsker", "briller", "kort"],
+            "campingplads": ["telt", "sovepose", "grill", "vandkande", "fakkel", "rygsæk", "kølebox", "campingbord", "stol", "insektspray"],
+            "telt": ["sovepose", "liggeunderlag", "lommelygte", "kompas", "vandtflaske", "rygsæk", "tændrør", "tøj", "snor", "pløkker"],
+            "autocamper": ["seng", "komfur", "køleskab", "toilet", "dusj", "bord", "siddeplads", "vinduer", "gardin", "førersæde"],
+            "yacht": ["sejl", "ror", "anker", "redningsvest", "solstol", "køler", "glas", "champagne", "kompass", "radio"],
+            "fiskekutter": ["fiskenet", "fiskestang", "fisk", "radar", "kompass", "radio", "redningsvest", "motor", "køler", "is"],
+            "havnemole": ["kæde", "bøje", "fiskestang", "sejlbåd", "kran", "container", "flydestol", "reb", "affald", "måge"],
+            "fyrtårn": ["lyskaster", "trapper", "vindue", "radio", "kikkert", "søkort", "sikkerhedsudstyr", "generator", "stige", "dør"],
+            "tankstation": ["benzinpumpe", "kvittering", "slikskab", "kaffe", "motorolie", "vinduespudser", "luftpumpe", "kasse", "avis", "bil-luftfrisker"],
+            "værksted": ["værktøj", "skruenøglesæt", "olie", "lift", "bildele", "diagnostik-computer", "handsker", "lommelygte", "hydraulikpumpe", "kalender"],
+            "losseplads": ["affald", "container", "jern-skrot", "pap", "metal", "glas", "plast", "køretøj", "handsker", "skilt"],
+            "genbrugsstation": ["flaske", "glas", "papir", "pap", "metal", "elektronik", "container", "handsker", "lommeregner", "skilt"],
+            "posthus": ["brev", "frimærke", "pakke", "vægt", "kuglepen", "formular", "postkasse", "kasseapparat", "kø-automat", "kalender"],
+            "bank": ["konto-saldo", "hæveautomat", "formular", "kuglepen", "rådgiver", "sikkerhedskamera", "stempel", "check", "kasse", "brochure"],
+            "ambassade": ["flag", "pas", "visum", "formular", "skrivebord", "stempel", "dokument", "sikkerhedsvagt", "venterum", "printer"],
+            "lufthavn": ["boardingcard", "pas", "kuffert", "scanner", "sikkerhedskontrol", "taxfree", "gate", "toiletter", "cafeteria", "ur"],
+            "tolden": ["scanner", "pas", "vareseddel", "formular", "vægt", "inspektør", "kontrol", "stempel", "uniform", "computer"],
+            "grænseovergang": ["pas", "kontrol-booth", "skilt", "kø", "sikkerhedsvagt", "stempel", "computer", "formular", "spærre", "flag"],
+            "festival": ["armbånd", "øl", "scene", "højtalere", "telt", "sovepose", "grill", "guirlande", "toiletbygning", "scene-program"],
+            "marked": ["krambod", "grøntsager", "frugt", "pose", "penge", "blomster", "ost", "brød", "håndlavet-vare", "informationstabel"],
+            "auktion": ["hammer", "katalog", "bud-nummer", "auctioneer", "genstand", "mikrofon", "skilt", "sæde", "program", "pen"],
+            "galoppbane": ["hest", "jockey", "sadel", "gevinstcouponer", "fernglas", "program", "betting-terminal", "bane", "tribune", "flag"],
+            "dyrepark": ["dyr", "informationstavle", "korn", "kort", "bænk", "affaldskurv", "is", "fodersæk", "legeplads", "gitter"],
+            "akvarium": ["fisk", "glas", "informationstavle", "vandfilter", "sø-sten", "tang", "fodring-sæt", "målingsinstrument", "interaktiv skærm", "plakat"],
+            "kasino": ["jetoner", "kort", "roulette-hjul", "terninger", "spillebord", "cocktail", "sikkerhedsvagt", "kuglepen", "kamera", "pengeseddel"],
+            "spillekasino": ["slot-machine", "jetoner", "præmier", "lyd", "spil-automater", "sæde", "drink", "musik", "sikkerhedskamera", "dealer"],
+            "loppemarked": ["brugt tøj", "gammel bog", "møbler", "porcelæn", "antik-genstand", "glasfigur", "pris-mærke", "pose", "penge", "håndlavede ting"],
+            "penthouse": ["skyline", "vindue", "bar", "sofapude", "kunst", "champagne", "fjernbetjening", "terrasseudgang", "spejl", "gulvtæppe"],
+            "kælder": ["æske", "støv", "lampe", "reoler", "vinhylde", "fryser", "værktøjskasse", "ledning", "tæppe", "brændeovn"],
+            "loft": ["kasse", "spindelvæv", "pære", "antik-genstand", "kuffert", "bog", "støvklud", "vindue", "isolation", "stige"],
+            "garage": ["bil", "værktøj", "olie", "cykler", "reol", "maling", "kost", "stige", "haveudstyr", "papkasse"]
         };
 
-        const colors = {
-            eskild: '#10b981',
-            kim: '#3b82f6',
-            henrik: '#f59e0b',
-            nikolaj: '#ef4444'
-        };
+        const relations = [
+            "gamle venner", "et par", "nygifte", "søskende", "kollegaer", "chef og medarbejder",
+            "nabo", "ekskærester", "forretningspartnere", "konkurrenter", "rivaler", "klassekammerater",
+            "fjerne slægtninge", "genboer", "rejsefæller", "gymnasiekærester", "studiekammerater",
+            "træningsmakkere", "roommates", "bandmedlemmer", "skuespillere", "lærer og elev",
+            "instruktør og skuespiller", "psykolog og klient", "advokat og klient", "læge og patient",
+            "frisør og kunde", "sælger og køber", "barista og stamgæst", "taxachauffør og passager",
+            "kok og tjener", "pilot og steward", "dommer og anklagede", "politibetjent og mistænkt",
+            "vagt og fange", "redder og reddet", "holdkammerater", "konkurrerende atleter",
+            "musikkolleger", "fans af samme band", "gamere fra samme guild", "bogklub-medlemmer",
+            "pensionister på udflugt", "frivillige ved samme projekt", "deltagere på et kursus",
+            "deltagere i et reality-show", "konkurrenter i en tävling", "interview og interviewer",
+            "podcaster og gæst", "blogger og læser", "influencer og fan", "streamere",
+            "online-venner der mødes første gang", "matchede på datingapp", "blind date",
+            "forlovede", "forældre til samme børnefødselsdag", "hunde-ejere på hundelegeplads",
+            "medlemmer af samme hobbyforening", "nabohunde-ejere", "cykelkolleger", "carpoolers",
+            "folk der bytter hus", "airbnb-vært og gæst", "hosteler på vandrehjem", "campingnaboer",
+            "festivalgængere der deler telt", "mennesker i en elevator der går i stå",
+            "folk fanget i et ventorum", "passagerer i et forsinket fly", "passagerer på en sinkende skib",
+            "mennesker i et faldefærdigt hus", "overlevende i en katastrofe",
+            "mennesker i en sikkerhedsrum", "personer på et overfyldt tog", "buret i en kø",
+            "mennesker i en sammenbrudt tunnel", "folk i en fastlåst fryser", "personer i et faldelift",
+            "personer i en ubåd uden luft", "astronauter alene i rummet", "forskere i isolation",
+            "deltagere i et psykologisk eksperiment", "testpersoner i et socialt eksperiment",
+            "aktører i en rollespil-session", "deltagere i improvisations-kursus", "medvirkende i en film",
+            "deltagere i en jagt", "deltagere i escape room", "deltagere i et reality-show i bjergene",
+            "mennesker i et bunker-eksperiment", "personer på en øde ø", "folk på en øde rumstation",
+            "deltagere i et survivalshow", "medlemmer af en hemmelig klub", "medlemmer af et kobbel",
+            "mennesker der prøver at finde hinanden", "mennesker der aldrig har mødt hinanden",
+            "mennesker der kender hinanden for godt", "mennesker der vil undgå hinanden",
+            "mennesker der skal samarbejde på trods", "mennesker der har en fælles hemmelighed",
+            "mennesker der deler et traume", "mennesker der skylder hinanden noget",
+            "mennesker i gensidig afhængighed", "mennesker der genforenes efter mange år",
+            "tvillinger", "fjender der bliver allierede", "fjender der bliver venner", "venner der bliver fjender"
+        ];
 
-        const months = {
-            3: 'Marts',
-            4: 'April',
-            5: 'Maj',
-            9: 'September',
-            10: 'Oktober',
-            11: 'November'
-        };
+        const secrets = [
+            "har løjet om sit job", "er forelsket i den anden", "har stjålet noget",
+            "planlægger at forlade stedet", "har en skjult dagsorden", "skylder den anden penge",
+            "kender et pinligt faktum om den anden", "har løjet om sin identitet",
+            "er i virkeligheden ikke den person de udgiver sig for", "har en skjult sygdom",
+            "er hemmelig milionær", "har løjet om sin alder", "har en hemmelig familie",
+            "har været i fængsel", "har ændret sit navn", "er vidne til noget ulovligt",
+            "har været utro", "har svigtet den anden tidligere", "kender den andens ekskæreste",
+            "har saboteret noget for den anden", "har løjet om sin uddannelse",
+            "arbejder for en konkurrent", "er journalist på dække historien", "er privatdetektiv",
+            "er politiagent undercover", "har plantet noget i den andens ejendele",
+            "har læst den andens dagbog", "kender den andens hemmelighed",
+            "har hacket den andens computer", "har lyttet til den andens samtaler",
+            "har set noget den anden ikke ved", "ved hvor den anden har gemt noget",
+            "har været sammen med den andens kæreste", "er gravid", "har mistet noget vigtigt",
+            "har fundet noget der ikke tilhører dem", "har set et drab",
+            "ved hvem der stjal noget værdifuldt", "kender morderens identitet",
+            "har dækket over en forbrydelse", "har løjet under ed", "har givet falsk alibi",
+            "har skjult beviser", "har forfalsk et dokument", "har brugt falsk identitet",
+            "har svindlet med penge", "har unddraget skat", "skylder penge til farlige folk",
+            "er på flugt fra loven", "har en dusør på sit hoved", "er vidne-beskyttelse",
+            "har ændret udseende", "gemmer sig for nogen", "bliver forfulgt",
+            "har planlagt et røveri", "har information der kan ødelægge den anden",
+            "har løjet om hvor de var i går", "har aflyst en vigtig aftale for at være her",
+            "ved at de bliver fyret snart", "har søgt nyt job", "har fået nyt job men ikke fortalt det",
+            "planlægger at flytte til udlandet", "har købt billet uden at fortælle det",
+            "har solgt den andens ejendele", "har lånt penge uden tilladelse",
+            "har brugt den andens kreditkort", "har tilgået den andens bank-konto",
+            "har ændret den andens testamente", "har forfalsket en underskrift",
+            "har åbnet den andens post", "har lyttet til den andens telefonbeskeder",
+            "ved at den anden lyver", "ved at den anden snyder", "ved at den anden er i fare",
+            "har advaret den anden men blev ignoreret", "har prøvet at beskytte den anden",
+            "har ofret noget for den anden uden at fortælle det", "har reddet den andens liv",
+            "har taget æren for den andens arbejde", "har saboteret den andens chance",
+            "har givet den anden forkerte oplysninger", "har plantet falske beviser",
+            "har fremstillet den anden i dårligt lys", "har spredt rygter",
+            "har løjet til andre om den anden", "har dækket over den andens fejl",
+            "ved at den anden har bedragaet nogen", "ved at den anden har løjet for alle",
+            "har set den anden gøre noget pinligt", "har billeder eller video af den anden",
+            "ved at den anden har en afhængighed", "ved at den anden tager medicin i hemmelighed",
+            "ved at den anden ikke har de kvalifikationer de påstår", "ved at den anden er fallit",
+            "kender den andens største frygt", "ved hvordan man manipulerer den anden",
+            "har brugt den andens svagheder mod dem", "har et våben skjult",
+            "har en nøgle til et hemmeligt sted", "har stjålet nøgler",
+            "ved kombinationen til en safe", "har adgang til fortrolig information",
+            "har planlagt dette møde", "vidste den anden ville være her",
+            "har ventet på den rette tid", "skal møde nogen anden lige efter",
+            "har løjet om hvor længe de kan blive", "skal væk inden noget sker",
+            "ved at noget snart sker", "har set alarmen", "ved at de er overvåget",
+            "kender en genvej ud", "har en plan B", "har et skjult motiv for at hjælpe",
+            "vil have noget fra den anden", "bruger den anden til at nå sit mål"
+        ];
 
-        function selectPerson(person) {
-            currentPerson = person;
-            document.querySelectorAll('.person-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            document.querySelector(`.person-btn.${person}`).classList.add('active');
+        function getRandomItem(array) {
+            return array[Math.floor(Math.random() * array.length)];
         }
 
-        function getWeekendsInMonth(year, month) {
-            const weekends = [];
-            const daysInMonth = new Date(year, month, 0).getDate();
-            
-            for (let day = 1; day <= daysInMonth; day++) {
-                const date = new Date(year, month - 1, day);
-                const dayOfWeek = date.getDay(); // 0=Søndag, 1=Mandag, ..., 5=Fredag, 6=Lørdag
-                
-                // Fredag (5) - tilføj Fre/Lør weekend
-                if (dayOfWeek === 5) {
-                    const saturday = day + 1;
-                    if (saturday <= daysInMonth) {
-                        // Verificer at næste dag faktisk er lørdag
-                        const nextDate = new Date(year, month - 1, saturday);
-                        if (nextDate.getDay() === 6) {
-                            weekends.push({
-                                label: `Fre/Lør ${day}/${saturday}`,
-                                key: `${year}-${month}-${day}-fs`,
-                                type: 'frisat'
-                            });
-                        }
-                    }
-                }
-                
-                // Lørdag (6) - tilføj Lør/Søn weekend
-                if (dayOfWeek === 6) {
-                    const sunday = day + 1;
-                    // Tjek om søndag er i samme måned eller næste måned
-                    if (sunday <= daysInMonth) {
-                        const nextDate = new Date(year, month - 1, sunday);
-                        if (nextDate.getDay() === 0) {
-                            weekends.push({
-                                label: `Lør/Søn ${day}/${sunday}`,
-                                key: `${year}-${month}-${day}-ss`,
-                                type: 'satsun'
-                            });
-                        }
-                    } else {
-                        // Søndag er den 1. i næste måned
-                        const nextMonthDate = new Date(year, month, 1);
-                        if (nextMonthDate.getDay() === 0) {
-                            weekends.push({
-                                label: `Lør/Søn ${day}/1*`,
-                                key: `${year}-${month}-${day}-ss`,
-                                type: 'satsun'
-                            });
-                        }
-                    }
-                }
+        function getObjectForLocation(location) {
+            const objects = objectsByLocation[location];
+            if (!objects || objects.length === 0) {
+                return "mystisk genstand";
             }
             
-            return weekends;
+            // Undgå duplikater ved at filtrere objekter der matcher lokationen
+            const validObjects = objects.filter(obj => 
+                obj.toLowerCase() !== location.toLowerCase()
+            );
+            
+            if (validObjects.length === 0) {
+                return "mystisk genstand";
+            }
+            
+            return getRandomItem(validObjects);
         }
 
-        function toggleSelection(key) {
-            if (!currentPerson) {
-                alert('Vælg venligst en person først!');
-                return;
-            }
+        function generateScenario() {
+            const location = getRandomItem(locations);
+            const relation = getRandomItem(relations);
+            const secret = getRandomItem(secrets);
+            const object = getObjectForLocation(location);
 
-            if (selections[currentPerson][key]) {
-                delete selections[currentPerson][key];
-            } else {
-                selections[currentPerson][key] = true;
-            }
-
-            renderCalendar();
-        }
-
-        function renderCalendar() {
-            const calendar = document.getElementById('calendar');
-            calendar.innerHTML = '';
-
-            for (let year = 2026; year <= 2040; year++) {
-                const yearDiv = document.createElement('div');
-                yearDiv.className = 'year-section';
-                
-                const yearTitle = document.createElement('div');
-                yearTitle.className = 'year-title';
-                yearTitle.textContent = year;
-                yearDiv.appendChild(yearTitle);
-
-                const monthsGrid = document.createElement('div');
-                monthsGrid.className = 'months-grid';
-
-                for (const [monthNum, monthName] of Object.entries(months)) {
-                    const monthCard = document.createElement('div');
-                    monthCard.className = 'month-card';
-
-                    const monthTitle = document.createElement('div');
-                    monthTitle.className = 'month-title';
-                    monthTitle.textContent = monthName;
-                    monthCard.appendChild(monthTitle);
-
-                    const weekends = getWeekendsInMonth(year, parseInt(monthNum));
+            const resultHTML = `
+                <div class="result-container">
+                    <div class="result-item">
+                        <div class="result-label">Sted</div>
+                        <div class="result-value">${location}</div>
+                    </div>
                     
-                    weekends.forEach(weekend => {
-                        const weekendRow = document.createElement('div');
-                        weekendRow.className = 'weekend-row';
-                        
-                        const option = createWeekendOption(weekend.label, weekend.key);
-                        weekendRow.appendChild(option);
-                        
-                        monthCard.appendChild(weekendRow);
-                    });
+                    <div class="result-item">
+                        <div class="result-label">Relation</div>
+                        <div class="result-value">${relation}</div>
+                   </div>
+                    
+                    <div class="result-item">
+                        <div class="result-label">Objekt</div>
+                        <div class="result-value">${object}</div>
+                    </div>
+                    
+                    <div class="result-item">
+                        <div class="result-label">Super X (Hemmelighed)</div>
+                        <div class="result-value super-x">${secret}</div>
+                    </div>
+                    
+                    <div class="scenario">
+                        To personer som er <strong>${relation}</strong> befinder sig på <strong>${location}</strong>. Den ene <strong>${secret}</strong>. Objekt i spil: <strong>${object}</strong>.
+                    </div>
+                </div>
+            `;
 
-                    monthsGrid.appendChild(monthCard);
-                }
-
-                yearDiv.appendChild(monthsGrid);
-                calendar.appendChild(yearDiv);
-            }
-        }
-
-        function createWeekendOption(label, key) {
-            const option = document.createElement('div');
-            option.className = 'weekend-option';
+            const resultArea = document.getElementById('resultArea');
+            resultArea.innerHTML = resultHTML;
+            resultArea.classList.remove('hidden');
             
-            const selectedBy = [];
-            for (const [person, sel] of Object.entries(selections)) {
-                if (sel[key]) {
-                    selectedBy.push(person);
-                }
-            }
-
-            if (selectedBy.length === 4) {
-                option.classList.add('all-available');
-            }
-
-            if (currentPerson && selections[currentPerson][key]) {
-                option.classList.add('selected');
-                option.style.backgroundColor = colors[currentPerson] + '20';
-                option.style.borderColor = colors[currentPerson];
-            }
-
-            option.innerHTML = `<div>${label}</div>`;
-
-            if (selectedBy.length > 0) {
-                const markers = document.createElement('div');
-                markers.className = 'markers';
-                selectedBy.forEach(person => {
-                    const marker = document.createElement('div');
-                    marker.className = 'marker';
-                    marker.style.backgroundColor = colors[person];
-                    marker.title = person.charAt(0).toUpperCase() + person.slice(1);
-                    markers.appendChild(marker);
-                });
-                option.appendChild(markers);
-            }
-
-            option.onclick = () => toggleSelection(key);
-            return option;
+            resultArea.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
-
-        renderCalendar();
     </script>
 </body>
 </html>
